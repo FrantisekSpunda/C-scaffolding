@@ -1,24 +1,24 @@
 {
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "C/C++ Runner: Debug Session",
-			"type": "cppdbg",
-			"request": "launch",
-			"args": [],
-			"stopAtEntry": false,
-			"externalConsole": true,
-			"cwd": "c:/Users/FRANTISEK-PC/OneDrive/c_dev/teste/src",
-			"program": "c:/Users/FRANTISEK-PC/OneDrive/c_dev/teste/bin/app.exe",
-			"MIMode": "gdb",
-			"miDebuggerPath": "C:/MinGW/bin/gdb.exe",
-			"setupCommands": [
-				{
-					"description": "Enable pretty-printing for gdb",
-					"text": "-enable-pretty-printing",
-					"ignoreFailures": true
-				}
-			]
-		}
-	]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "c:/Users/FRANTISEK-PC/OneDrive/c_dev/teste/app",
+      "program": "c:/Users/FRANTISEK-PC/OneDrive/c_dev/teste/app/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
 }

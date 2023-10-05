@@ -10,6 +10,8 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include "main.h"
+#include "lib.h"
 
 // include library for math functions
 
@@ -23,22 +25,26 @@ int getMax(int *arr, int size);
 
 int main(void)
 {
-  int userInput[5];
 
-  printf("Select 5 numbers: ");
-  for (int i = 0; i < 5; i++)
-  {
-    scanf("%d", &userInput[i]);
-  }
+  int test = bobek();
+  printf("%i", test);
 
-  int value = getBiggestDevider(userInput[0], userInput[1]);
-  printBackwards(userInput, 5);
-  int average = getAverage(userInput, 5);
-  int max = getMax(userInput, 5);
+  // int userInput[5];
 
-  printf("\nBiggest devider: %i\n", value);
-  printf("Average: %i\n", average);
-  printf("Max: %i\n", max);
+  // printf("Select 5 numbers: ");
+  // for (int i = 0; i < 5; i++)
+  // {
+  //   scanf("%d", &userInput[i]);
+  // }
+
+  // int value = getBiggestDevider(userInput[0], userInput[1]);
+  // printBackwards(userInput, 5);
+  // int average = getAverage(userInput, 5);
+  // int max = getMax(userInput, 5);
+
+  // printf("\nBiggest devider: %i\n", value);
+  // printf("Average: %i\n", average);
+  // printf("Max: %i\n", max);
 
   // writeFile();
 

@@ -1,1 +1,1 @@
-## C scuffolding structure
+## C scaffolding structure
