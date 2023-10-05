@@ -1,8 +1,15 @@
--include app.config
+# Configuration of creating configuration file
+APP_CONFIG_FILE = application.cfg
+-include APP_CONFIG_FILE
 
 AUTOR ?= ""
 VERSION ?= ""
 DESCRIPTION ?= ""
+
+define APP_CONFIG_CONTENT
+AUTOR=\"Your name\"\nVERSION=\"0.1\"\nDESCRIPTION=\"Description ...\"\nSRC_DIR=\"app/src\"\nINCLUDE_DIR=\"app/include\"
+endef
+
 
 # Compiler settings
 CC = gcc
@@ -32,9 +39,6 @@ define command_comment
 	@echo -e "\t\t# Run with $(COLOR_BLUE)'make $(1)'$(RESET)\n"
 endef
 
-print:
-	@echo "$(AUTOR)"
-
 help:
 	@clear
 	$(call command_comment,help,"This function shows all commands.")
@@ -63,6 +67,15 @@ run:
 	@cd ./$(BIN_DIR) && ./$(APP_NAME).exe
 
 all: build run
+
+init:
+	@if [ ! -f $(APP_CONFIG_FILE) ]; then \
+		echo -e "Creating file $(COLOR_BLUE)$(APP_CONFIG_FILE)$(RESET) ..."; \
+		echo -e "$(APP_CONFIG_CONTENT)" > $(APP_CONFIG_FILE); \
+		echo -e "$(COLOR_GREEN)File $(APP_CONFIG_FILE) was created.$(RESET)"; \
+	else \
+		echo -e "$(COLOR_BLUE)File $(APP_CONFIG_FILE) already exist.$(RESET)"; \
+	fi
 
 clean:
 	rm -rf $(OBJ_DIR) $(BIN_DIR)

@@ -53,6 +53,7 @@
 		"*.tsx": "typescriptreact",
 		"stdlib.h": "c",
 		"main.h": "c",
-		"lib.h": "c"
+		"lib.h": "c",
+		"stdio.h": "c"
 	}
 }
