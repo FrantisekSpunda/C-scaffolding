@@ -13,8 +13,8 @@ LDFLAGS = -lm
 APP_NAME = app
 SRC_DIR = app/src
 INC_DIR = app/include
-OBJ_DIR = obj
-BIN_DIR = bin
+OBJ_DIR = $(BUILD_DIR)/obj
+BIN_DIR = $(BUILD_DIR)/bin
 
 INCS=-I$(INC_DIR)
 TARGET = $(BIN_DIR)/$(APP_NAME)																	# output name
@@ -46,6 +46,7 @@ build: $(TARGET)
 
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(OBJ_DIR)
 	@echo -e "\n$(COLOR_BLUE)Building...$(RESET)"
 	$(CC) $(CFLAGS) $(INCS) -c -o $@ $<
