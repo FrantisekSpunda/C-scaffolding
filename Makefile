@@ -74,7 +74,7 @@ $(TARGET): $(OBJS)
 	$(call find_config)
 	$(COMPILER) $(COMPILER_FLAGS) -o $@ $^ $(LD_FLAGS)
 	@if [ $$? -eq 0 ]; then \
-		echo -e "\n $(COLOR_GREEN)Build was completed.$(RESET)"; \
+		echo -e "\n $(call style,Build was successfull.,GREEN)"; \
 	fi;
 
 run:
@@ -89,9 +89,9 @@ all: build run
 init:
 	@if [ ! -f $(CONFIG_FILE) ]; then \
 		cp $(CONFIG_EXAMPLE) $(CONFIG_FILE); \
-		echo -e " $(COLOR_GREEN)Creating $(CONFIG_FILE)$(RESET)";\
+		echo -e " Creating $(call style,"$(CONFIG_FILE)",LIGHT_GRAY)";\
 	else \
-		echo -e " $(COLOR_BLUE)File $(CONFIG_FILE) already exist.$(RESET)"; \
+		echo -e " $(call style,"File $(CONFIG_FILE) already exist.",BLUE)"; \
 	fi
 
 
