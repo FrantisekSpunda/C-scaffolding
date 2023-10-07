@@ -1,9 +1,8 @@
 /**
  * @file main.c
- * @author your name (you@domain.com)
- * @brief
- * @version 0.1
- * @date 2023-10-05
+ * @author Your name
+ * @date 2023-07-10
+ * @brief Project for some fun
  *
  * @copyright Copyright (c) 2023
  *

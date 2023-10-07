@@ -8,12 +8,14 @@ AUTOR=\"Your name\"\nVERSION=\"0.1\"\nDESCRIPTION=\"Description ...\"\nSRC_DIR=\
 endef
 
 # Settings
-OBJ_DIR = $(BUILD_DIR)/obj
-BIN_DIR = $(BUILD_DIR)/bin
-INCS=-I$(INCLUDE_DIR)
-TARGET = $(BIN_DIR)/$(APPLICATION_NAME)
-SRCS = $(wildcard $(SOURCE_DIR)/*.c)
+OBJ_DIR := $(BUILD_DIR)/obj
+BIN_DIR := $(BUILD_DIR)/bin
+INCS:=-I$(INCLUDE_DIR)
+TARGET := $(BIN_DIR)/$(APPLICATION_NAME)
+SRCS := $(shell find $(SOURCE_DIR) -type f -name "*.c")
 OBJS = $(patsubst $(SOURCE_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
+HEADER_TEMPLATE := template.h
+CURRENT_YEAR := $(shell date +%Y)
 
 define style
 $(COLOR_$(2))$(FORMAT_$(3))$(1)$(RESET)
@@ -55,7 +57,7 @@ help:
 	$(call command_comment,clear,"Clear all files that was created in build", "Aliases: $(call style,clean,GREEN)")
 list: help
 
-build: $(TARGET)
+build: add_header $(TARGET)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(BUILD_DIR)
@@ -89,11 +91,23 @@ init:
 		echo -e " $(COLOR_BLUE)File $(CONFIG_FILE) already exist.$(RESET)"; \
 	fi
 
+
+add_header:
+	@for file in $(SRCS); do \
+		filename=$$(basename $$file); \
+		current_date=$$(stat -c '%y' $$file | awk '{split($$1,a,"-"); print a[1]"-"a[3]"-"a[2]}'); \
+		echo -e " Adding header to $(call style,$$file,LIGHT_GRAY)"; \
+		if head -1 "$$file" | grep -q '^/\*\*'; then \
+			sed -i '1,10d' $$file;\
+		fi; \
+		sed -e "s/{{filename}}/$$filename/" -e "s/{{author}}/$(AUTHOR)/" -e "s/{{description}}/$(DESCRIPTION)/" -e "s/{{date}}/$$current_date/" -e "s/{{year}}/$(CURRENT_YEAR)/" $(HEADER_TEMPLATE) > $$file.tmp; \
+		cat $$file >> $$file.tmp;\
+		mv $$file.tmp $$file;\
+	done
+
 clean:
 	rm -rf $(BUILD_DIR)
 clear: clean
-
-.PHONY: help
 
 # ANSI escape sekvence pro barvy
 RESET = \033[0m
