@@ -1,12 +1,13 @@
 /**
  * @file main.c
- * @author Your name
+ * @author Frantisek Spunda
  * @date 2023-07-10
- * @brief Project for some fun
+ * @brief Description of this project
  *
  * @copyright Copyright (c) 2023
  *
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "main.h"

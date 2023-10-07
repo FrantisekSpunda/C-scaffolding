@@ -14,7 +14,7 @@ INCS:=-I$(INCLUDE_DIR)
 TARGET := $(BIN_DIR)/$(APPLICATION_NAME)
 SRCS := $(shell find $(SOURCE_DIR) -type f -name "*.c")
 OBJS = $(patsubst $(SOURCE_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
-HEADER_TEMPLATE := template.h
+HEADER_TEMPLATE := header.template.h
 CURRENT_YEAR := $(shell date +%Y)
 
 define style
@@ -22,7 +22,7 @@ $(COLOR_$(2))$(FORMAT_$(3))$(1)$(RESET)
 endef
 
 define command_comment 																						# function for help texts
-	@echo -e " $(call style,$(1),GREEN)\t\t$(2)"
+	@echo -e " $(call style,$(1),GREEN,BOLD)\t\t$(2)"
 	@for arg in $(3) $(4) $(5); do \
 		if [ -n "$$arg" ]; then \
 			echo -e "\t\t$$arg"; \
@@ -33,31 +33,34 @@ endef
 
 define find_config
 @if [ ! -f $(CONFIG_FILE) ]; then \
-	echo -e "\n $(call style,No config file!!,RED,BOLD).\n Run $(call style,'make init',BLUE) to create $(call style,$(CONFIG_FILE),LIGHT_GRAY) file and edit it.\n";\
+	echo -e "\n $(call style,No config file!!,RED,BOLD).\n Run $(call style,'make init',BLUE) to create $(call style,$(CONFIG_FILE),LIGHT_GRAY,UNDERLINE) file and edit it.\n";\
 fi
 endef
 
 info:
-	@echo -e " Config file:\t\t$(call style,$(CONFIG_FILE),LIGHT_GRAY)"
+	@echo -e " Config file:\t\t$(call style,$(CONFIG_FILE),LIGHT_GRAY,UNDERLINE)"
 	@echo -e " Compier:\t\t$(call style,$(COMPILER),LIGHT_GRAY)"
 	@echo -e " Compiler flags:\t$(call style,$(COMPILER_FLAGS),LIGHT_GRAY)"
-	@echo -e " Source folder:\t\t$(call style,$(SOURCE_DIR),LIGHT_GRAY) (*.c files,LIGHT_GRAY)"
-	@echo -e " Include folder:\t$(call style,$(INCLUDE_DIR),LIGHT_GRAY) (*.h files,LIGHT_GRAY)"
-	@echo -e " App file:\t\t$(call style,"$(BIN_DIR)/$(APPLICATION_NAME).exe",LIGHT_GRAY)\n"
-	@echo -e " You can change these values and more in $(call style,config.cfg,LIGHT_GRAY)\n"
+	@echo -e " Header file:\t\t$(call style,$(HEADER_TEMPLATE),LIGHT_GRAY,UNDERLINE)"
+	@echo -e " Source folder:\t\t$(call style,$(SOURCE_DIR),LIGHT_GRAY,UNDERLINE) (*.c files)"
+	@echo -e " Include folder:\t$(call style,$(INCLUDE_DIR),LIGHT_GRAY,UNDERLINE) (*.h files)"
+	@echo -e " App file:\t\t$(call style,"$(BIN_DIR)/$(APPLICATION_NAME).exe",LIGHT_GRAY,UNDERLINE)\n"
+	@echo -e " You can change these values and more in $(call style,config.cfg,LIGHT_GRAY,UNDERLINE)\n"
 	@echo -e " For list of commands run $(call style,"\'make help\'",BLUE,BOLD)"
 
 help:
 	@clear
-	$(call command_comment,help,"This command shows this message.", "Aliases: $(call style,list,GREEN)")
+	$(call command_comment,help,"This command shows this message", "Aliases: $(call style,list,LIGHT_GREEN)")
 	$(call command_comment,init,"Create configuration file with example data")
-	$(call command_comment,build,"Function for compile your code in src folder.","For build you need config file", "Aliases: $(COLOR_GREEN)compile$(RESET)")
+	$(call command_comment,build,"Function for compile your code in src folder","For build you need config file", "Aliases: $(call style,compile,LIGHT_GREEN)")
 	$(call command_comment,run,"Run yoour program in one command.")
 	$(call command_comment,all,"Run build and run at same time.")
-	$(call command_comment,clear,"Clear all files that was created in build", "Aliases: $(call style,clean,GREEN)")
+	$(call command_comment,clear,"Clear all files that was created in build", "Aliases: $(call style,clean,LIGHT_GREEN)")
+	$(call command_comment,header,"Add to all .c files header","You can find what the header looks like in $(call style,$(HEADER_TEMPLATE),LIGHT_GRAY,UNDERLINE).")
+	$(call command_comment,module,"This command create new module","Module contain .c file and .h file","Command also add $(call style,#include,PURPLE) $(call style,\"file.h\",BROWN)")
 list: help
 
-build: add_header $(TARGET)
+build: header $(TARGET)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(BUILD_DIR)
@@ -92,18 +95,34 @@ init:
 	fi
 
 
-add_header:
+header:
 	@for file in $(SRCS); do \
 		filename=$$(basename $$file); \
 		current_date=$$(stat -c '%y' $$file | awk '{split($$1,a,"-"); print a[1]"-"a[3]"-"a[2]}'); \
-		echo -e " Adding header to $(call style,$$file,LIGHT_GRAY)"; \
+		echo -e " Adding header to $(call style,$$file,LIGHT_GRAY,UNDERLINE)"; \
 		if head -1 "$$file" | grep -q '^/\*\*'; then \
 			sed -i '1,10d' $$file;\
 		fi; \
 		sed -e "s/{{filename}}/$$filename/" -e "s/{{author}}/$(AUTHOR)/" -e "s/{{description}}/$(DESCRIPTION)/" -e "s/{{date}}/$$current_date/" -e "s/{{year}}/$(CURRENT_YEAR)/" $(HEADER_TEMPLATE) > $$file.tmp; \
+		echo >> $$file.tmp; \
 		cat $$file >> $$file.tmp;\
 		mv $$file.tmp $$file;\
 	done
+
+module:
+	@read -p " Enter name of the module (without suffix): " module_name; \
+	module_c="$(SOURCE_DIR)/$$module_name.c"; \
+	echo -e "Creating file $(call style,$$module_c,LIGHT_GRAY,UNDERLINE)"; \
+	echo "#include \"$$module_name.h\"" > $$module_c; \
+	\
+	module_h="$(INCLUDE_DIR)/$$module_name.h"; \
+	echo -e "Creating file $(call style,$$module_h,LIGHT_GRAY,UNDERLINE)"; \
+	echo "#ifndef _$${module_name}_H_" > $$module_h; \
+	echo "#define _$${module_name}_H_" >> $$module_h; \
+	echo >> $$module_h; \
+	echo "#endif" >> $$module_h; \
+	echo "Module was created"
+
 
 clean:
 	rm -rf $(BUILD_DIR)

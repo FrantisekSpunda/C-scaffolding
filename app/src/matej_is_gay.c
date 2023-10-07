@@ -1,5 +1,5 @@
 /**
- * @file lib.c
+ * @file matej_is_gay.c
  * @author Frantisek Spunda
  * @date 2023-07-10
  * @brief Description of this project
@@ -8,9 +8,4 @@
  *
  */
 
-#include "lib.h"
-
-int bobek()
-{
-  return MAIN_TEST;
-}
+#include "matej_is_gay.h"
